@@ -1,17 +1,18 @@
 import {initializeApp} from 'firebase/app';
 import {getStorage} from 'firebase/storage';
 import {ApplicationConfig, ObscureListApiApplication} from './application';
+import {env} from './env';
 
 export * from './application';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyByr6vfPscujiB4zfyPlmO4_WYhR7JPeh0',
-  authDomain: 'carfest-9bd76.firebaseapp.com',
-  projectId: 'carfest-9bd76',
-  storageBucket: 'carfest-9bd76.appspot.com',
-  messagingSenderId: '189322879065',
-  appId: '1:189322879065:web:788bc592baf4b6c9981148',
-  measurementId: 'G-QR2WFL28B6',
+  apiKey: env.FIREBASE_API_KEY,
+  authDomain: env.FIREBASE_AUTH_DOMAIN,
+  projectId: env.FIREBASE_PROJECT_ID,
+  storageBucket: env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: env.FIREBASE_APP_ID,
+  measurementId: env.FIREBASE_MEASUREMENT_ID,
 };
 
 export async function main(options: ApplicationConfig = {}) {
