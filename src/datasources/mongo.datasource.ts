@@ -1,6 +1,6 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
-const env = require('dotenv').config();
+import {env} from '../env';
 
 const config = {
   name: 'MongoDBDataSource',
