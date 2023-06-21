@@ -1,11 +1,10 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 import {env} from '../env';
-
 const config = {
   name: 'MongoDBDataSource',
   connector: 'mongodb',
-  url: `${env.MONGO_URL}${env.DB_ENV}`,
+  url: `${env.MONGO_URL}${env.DB_ENV}?retryWrites=true&w=majority`,
   host: '',
   port: 0,
   user: '',
