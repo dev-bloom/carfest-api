@@ -7,23 +7,25 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
 import {Car} from '../models';
 import {CarRepository} from '../repositories';
+import {CarInfoEvents, emptyCarInfoEvents} from '../utils/car';
+import {uploadBase64ToFirebase} from '../utils/file';
 
 export class CarController {
   constructor(
     @repository(CarRepository)
-    public carRepository : CarRepository,
+    public carRepository: CarRepository,
   ) {}
 
   @post('/cars')
@@ -44,7 +46,27 @@ export class CarController {
     })
     car: Omit<Car, 'id'>,
   ): Promise<Car> {
-    return this.carRepository.create(car);
+    const {events} = car;
+    const parsedEvents: CarInfoEvents = (events ?? []).reduce(
+      (prevEvents, currentEvent) => ({
+        ...prevEvents,
+        [currentEvent]: emptyCarInfoEvents[currentEvent],
+      }),
+      {},
+    );
+    const downloadURLS = await Promise.all(
+      car.gallery.map(async (image, index) => {
+        const downloadURL = await uploadBase64ToFirebase(
+          image,
+          `Images/cars/car_${car.alias}_${index}`,
+        );
+        return {index, downloadURL};
+      }),
+    );
+    const gallery = downloadURLS
+      .sort((a, b) => a.index - b.index)
+      .map(({downloadURL}) => downloadURL);
+    return this.carRepository.create({...car, gallery, ...parsedEvents});
   }
 
   @get('/cars/count')
@@ -52,9 +74,7 @@ export class CarController {
     description: 'Car model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Car) where?: Where<Car>,
-  ): Promise<Count> {
+  async count(@param.where(Car) where?: Where<Car>): Promise<Count> {
     return this.carRepository.count(where);
   }
 
@@ -70,9 +90,7 @@ export class CarController {
       },
     },
   })
-  async find(
-    @param.filter(Car) filter?: Filter<Car>,
-  ): Promise<Car[]> {
+  async find(@param.filter(Car) filter?: Filter<Car>): Promise<Car[]> {
     return this.carRepository.find(filter);
   }
 
@@ -106,7 +124,7 @@ export class CarController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Car, {exclude: 'where'}) filter?: FilterExcludingWhere<Car>
+    @param.filter(Car, {exclude: 'where'}) filter?: FilterExcludingWhere<Car>,
   ): Promise<Car> {
     return this.carRepository.findById(id, filter);
   }

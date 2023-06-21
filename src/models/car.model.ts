@@ -1,4 +1,5 @@
 import {Entity, model, property} from '@loopback/repository';
+import {CarInfoEvents} from '../utils/car';
 
 @model()
 export class Car extends Entity {
@@ -18,7 +19,13 @@ export class Car extends Entity {
     type: 'array',
     itemType: 'string',
   })
-  gallery?: string[];
+  gallery: string[];
+
+  @property({
+    type: 'array',
+    itemType: 'string',
+  })
+  events?: (keyof CarInfoEvents)[];
 
   @property({
     type: 'number',
@@ -55,7 +62,6 @@ export class Car extends Entity {
     type: 'object',
   })
   social?: object;
-
 
   constructor(data?: Partial<Car>) {
     super(data);

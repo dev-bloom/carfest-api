@@ -2,6 +2,7 @@ import {Blob} from 'buffer';
 import {
   FirebaseStorage,
   UploadMetadata,
+  getDownloadURL,
   getStorage,
   ref,
   uploadBytes,
@@ -10,24 +11,23 @@ import {
 let storage: FirebaseStorage;
 
 export async function uploadBase64ToFirebase(
-  base64: string,
+  uploadString: string,
   refPath: string,
-  contentType = '',
-) {
+): Promise<string> {
   if (!storage) storage = getStorage();
-  const PDFRef = ref(storage, refPath);
+  const [contentType, base64, fileExt] = uploadString.split(',');
+  const fileRef = ref(storage, `${refPath}.${fileExt}`);
 
   // Convert base64 to a Buffer
   const buffer = Buffer.from(base64, 'base64');
 
   const metadata: UploadMetadata = {
-    contentType: contentType,
+    contentType: contentType.replace('data:', '').replace(';base64', ''),
   };
 
   // Upload the buffer to Firebase Storage
-  const snapshot = await uploadBytes(PDFRef, buffer, metadata);
-  console.log('Uploaded a blob or file!');
-  return snapshot;
+  const snapshot = await uploadBytes(fileRef, buffer, metadata);
+  return getDownloadURL(snapshot.ref);
 }
 
 export const base64ToBlob = (base64: string, contentType = ''): Blob => {

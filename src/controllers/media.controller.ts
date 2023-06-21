@@ -17,7 +17,6 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {getDownloadURL} from 'firebase/storage';
 import {Media} from '../models';
 import {MediaRepository} from '../repositories';
 import {uploadBase64ToFirebase} from '../utils/file';
@@ -46,12 +45,10 @@ export class MediaController {
     })
     media: Omit<Media, 'id'>,
   ): Promise<Media> {
-    const snapshot = await uploadBase64ToFirebase(
+    const downloadURL = await uploadBase64ToFirebase(
       media.letter,
-      `PDFs/letters/medio_${media.name}_carta.pdf`,
-      'application/pdf',
+      `PDFs/letters/medio_${media.name}_carta`,
     );
-    const downloadURL = await getDownloadURL(snapshot.ref);
     return this.mediaRepository.create({...media, letter: downloadURL});
   }
 
