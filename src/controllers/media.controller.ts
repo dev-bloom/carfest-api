@@ -19,6 +19,7 @@ import {
 } from '@loopback/rest';
 import {Media} from '../models';
 import {MediaRepository} from '../repositories';
+import {sendMediaMail} from '../utils/email';
 import {uploadBase64ToFirebase} from '../utils/file';
 
 export class MediaController {
@@ -49,7 +50,14 @@ export class MediaController {
       media.letter,
       `PDFs/letters/medio_${media.name}_carta`,
     );
-    return this.mediaRepository.create({...media, letter: downloadURL});
+    const createdMedia = await this.mediaRepository.create({
+      ...media,
+      letter: downloadURL,
+    });
+    media.representatives.forEach(representative => {
+      sendMediaMail((representative as {email: string}).email);
+    });
+    return createdMedia;
   }
 
   @get('/media/count')
