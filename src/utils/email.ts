@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import {env} from '../env';
 
 const buildMediaEmail = () => `
 <!DOCTYPE html>
@@ -57,14 +58,14 @@ const transporter = nodemailer.createTransport({
   secure: false, // true for 465, false for other ports
   auth: {
     user: 'me@alejandrochaves.dev', // replace with your SMTP username
-    pass: 'C90v#1sezyVt3$YZ8j$ApBpg%Sewu5', // replace with your SMTP password
+    pass: env.EMAIL_KEY, // replace with your SMTP password
   },
 });
 
 export const sendMediaMail = (to: string) => {
   transporter
     .sendMail({
-      from: '"Thecarfest" <thecarfest@devbloom.com.co',
+      from: '"Thecarfest" <me@alejandrochaves.dev',
       to,
       subject: 'Inscripción prensa the CarFest',
       html: buildMediaEmail(),
