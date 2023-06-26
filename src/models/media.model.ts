@@ -36,10 +36,9 @@ export class Media extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  letter: string;
-
+  letter?: string;
 
   constructor(data?: Partial<Media>) {
     super(data);

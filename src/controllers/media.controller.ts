@@ -20,7 +20,6 @@ import {
 import {Media} from '../models';
 import {MediaRepository} from '../repositories';
 import {sendMediaMail} from '../utils/email';
-import {uploadBase64ToFirebase} from '../utils/file';
 
 export class MediaController {
   constructor(
@@ -46,18 +45,18 @@ export class MediaController {
     })
     media: Omit<Media, 'id'>,
   ): Promise<Media> {
-    const downloadURL = await uploadBase64ToFirebase(
-      media.letter,
-      `PDFs/letters/medio_${media.name}_carta`,
-    );
-    const createdMedia = await this.mediaRepository.create({
-      ...media,
-      letter: downloadURL,
-    });
+    // const downloadURL = await uploadBase64ToFirebase(
+    //   media.letter,
+    //   `PDFs/letters/medio_${media.name}_carta`,
+    // );
+    // const createdMedia = await this.mediaRepository.create({
+    //   ...media,
+    //   letter: downloadURL,
+    // });
     media.representatives.forEach(representative => {
       sendMediaMail((representative as {email: string}).email);
     });
-    return createdMedia;
+    return media;
   }
 
   @get('/media/count')
