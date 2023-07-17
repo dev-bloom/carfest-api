@@ -118,7 +118,10 @@ export class CarController {
     description: 'Car model instance',
     content: {
       'application/json': {
-        schema: getModelSchemaRef(Car, {includeRelations: true}),
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Car, {includeRelations: true}),
+        },
       },
     },
   })
@@ -127,6 +130,22 @@ export class CarController {
     @param.filter(Car, {exclude: 'where'}) filter?: FilterExcludingWhere<Car>,
   ): Promise<Car> {
     return this.carRepository.findById(id, filter);
+  }
+
+  @get('/cars/uid/{uid}')
+  @response(200, {
+    description: 'Cars model instance by uid',
+    content: {
+      'application/json': {
+        schema: getModelSchemaRef(Car, {includeRelations: true}),
+      },
+    },
+  })
+  async findByEmail(
+    @param.path.string('uid') uid: string,
+    @param.filter(Car, {exclude: 'where'}) filter?: FilterExcludingWhere<Car>,
+  ): Promise<Car[]> {
+    return this.carRepository.find({where: {uid}}, filter);
   }
 
   @patch('/cars/{id}')

@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import {env} from '../env';
-console.debug(env);
 
 const buildMediaEmail = () => `
 <!DOCTYPE html>

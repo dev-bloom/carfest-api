@@ -32,7 +32,7 @@
     "preopenapi-spec": "yarn run build",
     "openapi-spec": "node ./dist/openapi-spec",
     "prestart": "yarn run rebuild",
-    "start": "node -r source-map-support/register .",
+    "start": "nodemon -r source-map-support/register .",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "yarn run clean && yarn run build"
   },
@@ -55,6 +55,8 @@
     "@loopback/rest": "^13.0.0",
     "@loopback/rest-explorer": "^6.0.0",
     "@loopback/service-proxy": "^6.0.0",
+    "axios": "^1.4.0",
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.3.1",
     "firebase": "^9.22.2",
     "loopback-connector-mongodb": "^5.2.3",
@@ -68,6 +70,7 @@
     "@types/node": "^14.18.47",
     "@types/nodemailer": "^6.4.8",
     "eslint": "^8.40.0",
+    "nodemon": "^2.0.22",
     "source-map-support": "^0.5.21",
     "typescript": "~4.9.5"
   }

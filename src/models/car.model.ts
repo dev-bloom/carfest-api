@@ -6,6 +6,11 @@ export class Car extends Entity {
   @property({
     type: 'string',
   })
+  uid: string;
+
+  @property({
+    type: 'string',
+  })
   alias?: string;
 
   @property({

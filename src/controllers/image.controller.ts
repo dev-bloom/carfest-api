@@ -10,9 +10,7 @@ export class ImageFileController {
 
   @post('/upload')
   async upload(@requestBody.file() file: Buffer) {
-    const storage = getStorage();
-    console.debug('storage', storage);
-    console.debug('file', file);
+    getStorage();
     return true;
   }
 }
